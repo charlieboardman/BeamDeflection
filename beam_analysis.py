@@ -1,3 +1,12 @@
+#I got moments of inertia from this tool: https://skyciv.com/free-moment-of-inertia-calculator/
+#I got deflection calculations from this page: https://mechanicalc.com/reference/beam-deflection-tables
+#I got the normal stress due to bending moment from here: https://www.bu.edu/moss/mechanics-of-materials-bending-normal-stress/#:~:text=The%20stress%20is%20a%20function,Science%20Foundation%20under%20Grant%20No.
+#I got wood mechanical properties from here: https://www.fhwa.dot.gov/publications/research/safety/04097/sec130.cfm
+#I got the L/360 deflection standard from here: https://www.tcnatile.com/faqs/30-deflection.html#:~:text=The%20L%2F360%20standard%20means,the%20center%20and%20the%20end.
+#I got steel dimensions from here: https://www.engineeringtoolbox.com/american-standard-steel-channels-d_1321.html
+#Here's a span table that might be useful: https://www.bmp-group.com/docs/default-source/literature/c-joist-span-tables-and-detailsb7dd4bcfd1de6413ac21ff00002d9a3e.pdf?sfvrsn=81032fe2_0
+
+
 material_to_elastic_modulus = { #all values in psi
     "steel":29000000,
     "wood":1636460.8, #southern yellow pine, saturated, converted from MPa https://www.fhwa.dot.gov/publications/research/safety/04097/sec130.cfm
