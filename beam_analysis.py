@@ -28,21 +28,41 @@ class beam:
         self.yield_stress = material_to_rupture[self.material]
         self.modulus = material_to_elastic_modulus[self.material]
 
-def max_deflection(beam,load,span): #Calculates the maximum deflection
+
+#Point load functions
+def max_deflection_point_load(beam,load,span): #Calculates the maximum deflection
     #span (ft), load (lbf)
     d = load*((span*12)**3)/(48*beam.modulus*beam.moment) #inch
     allowable = True if (span*12)/360 > d * FoS else False
     return (d,allowable)
 
-def max_normal_stress(beam,load,span):
+def max_normal_stress_point_load(beam,load,span):
     max_moment = load*span*12/4
     max_sigma = beam.height/2*max_moment/beam.moment
     allowable = True if max_sigma * FoS < beam.yield_stress else False
     return(max_sigma,allowable)
+
+#Uniform distributed load functions
+def max_deflection_uniform_load(beam,w,span): #Load in lb/in
+    #span (ft), w (load) (lbf/in)
+    span_inch = span*12
+    x = span_inch/2
+    d = w*x*(span_inch**3 - 2*span_inch*(x**2) + x**3)/(24*beam.modulus*beam.moment)
+    allowable = True if d * FoS < span_inch/360 else False
+    return (d,allowable)
+
+def max_normal_stress_uniform_load(beam,w,span):
+    #span (ft), w (load) (lbf/in)
+    span_inch = span*12
+    max_moment = w*(span_inch**2)/8
+    max_sigma = beam.height/2*max_moment/beam.moment
+    allowable = True if max_sigma * FoS < beam.yield_stress else False
+    return (max_sigma,allowable)
 
 #beams
 #Steel channels info: https://www.engineeringtoolbox.com/american-standard-steel-channels-d_1321.html
 b2x4 = beam(5.359375,1.5*3.5,3.5,'wood')
 b2x6 = beam(20.796875,1.5*5.5,5.5,'wood')
 b2x8 = beam(47.634765625,1.5*7.25,7.25,'wood')
+b2x12 = beam(177.978515625,1.5*11.25,11.25,'wood')
 c4x7_25 = beam(4.59,2.13,4,'steel')
