@@ -7,6 +7,9 @@
 #Here's a span table that might be useful: https://www.bmp-group.com/docs/default-source/literature/c-joist-span-tables-and-detailsb7dd4bcfd1de6413ac21ff00002d9a3e.pdf?sfvrsn=81032fe2_0
 
 
+from tkinter import W
+
+
 material_to_elastic_modulus = { #all values in psi
     "steel":29000000,
     "wood":1636460.8, #southern yellow pine, saturated, converted from MPa https://www.fhwa.dot.gov/publications/research/safety/04097/sec130.cfm
@@ -58,6 +61,15 @@ def max_normal_stress_uniform_load(beam,w,span):
     max_sigma = beam.height/2*max_moment/beam.moment
     allowable = True if max_sigma * FoS < beam.yield_stress else False
     return (max_sigma,allowable)
+
+#Loading requirements are generally given in psf (pounds per square foot) so we need to translate that to a load in lbf/in
+def psf_to_w(psf,spacing): #Spacing is the distance between joists in your design, in inches
+    w = psf * spacing/12 #If spacing is 12 inches, each pound in psf is distributed over 12 inchs of joist
+    return w
+
+#Determine how close a beam is to yield stress under maximum psf
+def percent_to_yield(beam,psf,span,spacing):
+    return max_normal_stress_uniform_load(beam,psf_to_w(psf,spacing),span)[0]/beam.yield_stress
 
 #beams
 #Steel channels info: https://www.engineeringtoolbox.com/american-standard-steel-channels-d_1321.html
