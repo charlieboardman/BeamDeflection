@@ -6,17 +6,14 @@
 #I got steel dimensions from here: https://www.engineeringtoolbox.com/american-standard-steel-channels-d_1321.html
 #Here's a span table that might be useful: https://www.bmp-group.com/docs/default-source/literature/c-joist-span-tables-and-detailsb7dd4bcfd1de6413ac21ff00002d9a3e.pdf?sfvrsn=81032fe2_0
 
-
-from tkinter import W
-
-
 material_to_elastic_modulus = { #all values in psi
     "steel":29000000,
     "wood":1636460.8, #southern yellow pine, saturated, converted from MPa https://www.fhwa.dot.gov/publications/research/safety/04097/sec130.cfm
     }
 
 material_to_rupture = { #all values in psi
-    "steel":36000,
+    "steel":36000/2, #fatigue
+    #"steel":36000,
     "wood":7106.85 #southern yellow pine, saturated, converted from MPa https://www.fhwa.dot.gov/publications/research/safety/04097/sec140.cfm
     }
 
