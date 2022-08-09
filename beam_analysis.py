@@ -8,13 +8,19 @@
 
 material_to_elastic_modulus = { #all values in psi
     "steel":29000000,
-    "wood":1636460.8, #southern yellow pine, saturated, converted from MPa https://www.fhwa.dot.gov/publications/research/safety/04097/sec130.cfm
+    "wood":14648.8, #southern yellow pine, saturated, converted from MPa https://www.fhwa.dot.gov/publications/research/safety/04097/sec130.cfm
+    "A500steel":29000000,
+    "wood18":19435.1,
+    "A36steel":29000000
     }
 
 material_to_rupture = { #all values in psi
     "steel":36000/2, #fatigue
     #"steel":36000,
-    "wood":7106.85 #southern yellow pine, saturated, converted from MPa https://www.fhwa.dot.gov/publications/research/safety/04097/sec140.cfm
+    "wood":7106.85, #southern yellow pine, saturated, converted from MPa https://www.fhwa.dot.gov/publications/research/safety/04097/sec140.cfm
+    "A500steel":45000/2, #psi, https://www.tottentubes.com/astm-a500-specification-information
+    "wood18":11022.9,
+    "A36steel":36300/2
     }
 
 FoS = 1.5 #factor of safety
@@ -43,26 +49,23 @@ def max_normal_stress_point_load(beam,load,span):
     return(max_sigma,allowable)
 
 #Uniform distributed load functions
-def max_deflection_uniform_load(beam,w,span): #Load in lb/in
+def max_deflection_uniform_load(beam,psf,spacing,span): #Load in lb/in
     #span (ft), w (load) (lbf/in)
+    w = psf * spacing/12 #If spacing is 12 inches, each pound in psf is distributed over 12 inchs of joist
     span_inch = span*12
     x = span_inch/2
     d = w*x*(span_inch**3 - 2*span_inch*(x**2) + x**3)/(24*beam.modulus*beam.moment)
     allowable = True if d * FoS < span_inch/360 else False
     return (d,allowable)
 
-def max_normal_stress_uniform_load(beam,w,span):
+def max_normal_stress_uniform_load(beam,psf,spacing,span):
     #span (ft), w (load) (lbf/in)
+    w = psf * spacing/12 #If spacing is 12 inches, each pound in psf is distributed over 12 inchs of joist
     span_inch = span*12
     max_moment = w*(span_inch**2)/8
     max_sigma = beam.height/2*max_moment/beam.moment
     allowable = True if max_sigma * FoS < beam.yield_stress else False
     return (max_sigma,allowable)
-
-#Loading requirements are generally given in psf (pounds per square foot) so we need to translate that to a load in lbf/in
-def psf_to_w(psf,spacing): #Spacing is the distance between joists in your design, in inches
-    w = psf * spacing/12 #If spacing is 12 inches, each pound in psf is distributed over 12 inchs of joist
-    return w
 
 #Determine how close a beam is to yield stress under maximum psf
 def percent_to_yield(beam,psf,span,spacing):
@@ -76,3 +79,8 @@ b2x8 = beam(47.634765625,1.5*7.25,7.25,'wood')
 b2x10 = beam(98.9316400625,1.5*9.25,9.25,'wood')
 b2x12 = beam(177.978515625,1.5*11.25,11.25,'wood')
 c4x7_25 = beam(4.59,2.13,4,'steel')
+tube3x3 = beam(3.494792,2.75,3,'A500steel')
+tube6x4 = beam(6.731445,2.437500,6,'A500steel')
+tube4x2 = beam(4.216125,2.109375,4,'A500steel')
+b2x12dry = beam(177.978515625,1.5*11.25,11.25,'wood18')
+ibeam12x10 = beam(450.35338410667,16.6592,12,'A36steel')
